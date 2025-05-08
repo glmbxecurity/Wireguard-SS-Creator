@@ -27,10 +27,19 @@ generate_passphrase() {
 create_tunnel() {
     clear
     echo "🛠️  Generando configuración del servidor..."
+
+    # Pedir parámetros al usuario
+    read -p "IP del endpoint (ejemplo: 192.168.1.1): " ENDPOINT_IP
+    read -p "Puerto del endpoint (ejemplo: 51820): " WG_PORT
+    read -p "Rango de IP del túnel (ejemplo: 10.8.0.0/24): " TUNNEL_RANGE
+
+    # Extraer la primera IP del rango para el servidor
+    SERVER_IP=$(echo "$TUNNEL_RANGE" | cut -d'/' -f1) # Extraer la parte de la IP antes de la máscara
+    SERVER_IP="${SERVER_IP%.*}.1"  # Asignar la primera IP del rango para el servidor (ej: 10.8.0.1)
+
+    # Generar claves del servidor
     SERVER_PRIV_KEY=$(wg genkey)
     SERVER_PUB_KEY=$(echo "$SERVER_PRIV_KEY" | wg pubkey)
-    SERVER_IP="10.8.0.1"
-    WG_PORT="51820"
 
     cat > "$SERVER_CONF" <<EOF
 [Interface]
@@ -52,7 +61,11 @@ add_clients() {
 
     SERVER_PUB_KEY=$(awk '/PrivateKey/ {print $3}' "$SERVER_CONF" | wg pubkey)
     WG_PORT=$(awk '/ListenPort/ {print $3}' "$SERVER_CONF")
-    ALLOWED_IPS="172.21.1.0/24"
+    TUNNEL_RANGE=$(awk '/Address/ {print $3}' "$SERVER_CONF")
+    ALLOWED_IPS="$TUNNEL_RANGE"
+
+    # Pedir el rango de IPs para los clientes
+    read -p "Rango de IPs para los clientes (ejemplo: 10.8.0.0/24): " CLIENTS_RANGE
 
     # Contar la cantidad de peers ya existentes en el server.conf
     CLIENT_COUNT=$(grep -c '\[Peer\]' "$SERVER_CONF")
@@ -72,7 +85,9 @@ add_clients() {
         CLIENT_PRIV_KEY=$(wg genkey)
         CLIENT_PUB_KEY=$(echo "$CLIENT_PRIV_KEY" | wg pubkey)
         CLIENT_PSK=$(wg genpsk)
-        CLIENT_IP="10.8.0.$((CLIENT_ID + 1))"
+        
+        # Asignar una IP al cliente dentro del rango
+        CLIENT_IP="${CLIENTS_RANGE%/*}.$((CLIENT_ID + 1))"
 
         PASSPHRASE=$(generate_passphrase)
 
@@ -102,7 +117,7 @@ DNS = 1.1.1.1
 [Peer]
 PublicKey = $SERVER_PUB_KEY
 PresharedKey = $CLIENT_PSK
-Endpoint = TU_IP_PUBLICA_O_DNS:$WG_PORT
+Endpoint = $ENDPOINT_IP:$WG_PORT
 AllowedIPs = $ALLOWED_IPS
 PersistentKeepalive = 25
 EOF
