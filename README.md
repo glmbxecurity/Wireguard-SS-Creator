@@ -58,20 +58,20 @@ Para ambas herramientas necesitarás:
 
 ---
 ## Imagenes
-[img1](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator1.png)  
-[img2](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator2.png)  
-[img3](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator3.png)  
-[img4](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator4.png)  
-[img5](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator5.png)  
-[img6](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator6.png)  
+![img1](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator1.png)  
+![img2](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator2.png)  
+![img3](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator3.png)  
+![img4](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator4.png)  
+![img5](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator5.png)  
+![img6](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/creator6.png)  
 
-[connector1](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector1.png)  
-[connector2](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector2.png)  
-[connector3](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector3.png)  
-[connector4](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector4.png)  
-[connector5](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector5.png)  
-[connector6](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector6.png)  
-[connector7](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector7.png)
+![connector1](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector1.png)  
+![connector2](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector2.png)  
+![connector3](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector3.png)  
+![connector4](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector4.png)  
+![connector5](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector5.png)  
+![connector6](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector6.png)  
+![connector7](https://raw.githubusercontent.com/glmbxecurity/Wireguard-SS-Creator/refs/heads/main/images/connector7.png)
 
 ## 📋 Instrucciones de Uso
 
