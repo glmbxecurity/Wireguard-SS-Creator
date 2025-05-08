@@ -1,68 +1,119 @@
-# Wireguard-SS-Creator (Wireguard Simple & Secure Creator)
+# Wireguard-SS-Creator & Wireguard-SS-Connector
 
-## ¿Qué es Wireguard-SS-Creator?
+**Wireguard-SS-Creator** y **Wireguard-SS-Connector** son dos herramientas diseñadas para ofrecer una solución simple, segura y portátil para la creación y gestión de túneles VPN utilizando **WireGuard**. Estas herramientas están especialmente orientadas a administradores de redes y usuarios que deseen mantener la seguridad de sus claves privadas mientras utilizan conexiones VPN.
 
-**Wireguard-SS-Creator** es una herramienta sencilla y segura para la creación y gestión de túneles VPN utilizando **WireGuard**. Este proyecto está diseñado para ayudar a administradores de redes y usuarios a configurar rápidamente un servidor **WireGuard** y generar configuraciones de cliente de manera segura, con claves privadas cifradas usando **GPG** y contraseñas únicas generadas a partir de un diccionario de palabras.
+- **Wireguard-SS-Creator**: Ayuda en la creación de configuraciones de servidor y cliente de WireGuard, generando claves privadas cifradas con **GPG** y contraseñas seguras para cada cliente. Ideal para configurar servidores y distribuir configuraciones de cliente de forma segura.
+- **Wireguard-SS-Connector**: Proporciona un script interactivo para conectar y desconectar fácilmente desde un dispositivo USB, utilizando las configuraciones y claves privadas generadas previamente por **Wireguard-SS-Creator**. Garantiza que la clave privada se mantenga cifrada en el dispositivo USB hasta el momento de la conexión.
 
-El objetivo principal es automatizar la creación de túneles seguros, proporcionando una solución para crear múltiples clientes sin comprometer la seguridad de las claves.
+---
 
-## Características
+## 🚀 ¿Qué hacen estas herramientas?
 
-- **Creación de un túnel WireGuard para el servidor**: El script genera automáticamente la configuración del servidor WireGuard, incluyendo la clave privada y pública del servidor, así como la configuración de red.
-  
-- **Generación de múltiples clientes**: Puedes agregar fácilmente múltiples clientes al servidor WireGuard. El script crea los archivos de configuración para cada cliente y actualiza el archivo `server.conf` para incluir las claves públicas de los nuevos clientes.
-  
-- **Cifrado de claves privadas con GPG**: Las claves privadas de los clientes se almacenan de manera segura en archivos **GPG**. Las claves se cifran con una **contraseña simétrica** única generada automáticamente y almacenada en un archivo de texto separado.
+### **Wireguard-SS-Creator**
+**Wireguard-SS-Creator** es una herramienta que facilita la creación y gestión de configuraciones para un servidor **WireGuard** y sus clientes. Esta herramienta genera:
 
-- **Contraseñas seguras y fáciles de recordar**: Las contraseñas para cifrar las claves privadas se generan a partir de un diccionario de palabras, combinando palabras aleatorias con números y caracteres especiales para asegurar una contraseña de al menos 18 caracteres.
+- Configuraciones de **WireGuard** para el servidor y para cada cliente.
+- Claves privadas **cifradas** con **GPG**.
+- Contraseñas seguras generadas aleatoriamente para cifrar las claves privadas.
+- Un archivo de configuración del servidor que incluye las claves públicas de todos los clientes.
 
-- **Compatibilidad con POSIX**: El script es completamente compatible con sistemas POSIX, lo que significa que debería funcionar en una amplia variedad de sistemas Unix/Linux sin depender de características específicas de Bash.
+**Características principales**:
 
-- **Facilidad de uso**: El script cuenta con un menú interactivo que te permite elegir entre crear un túnel o agregar nuevos clientes al servidor sin complicaciones.
+- Generación automática de claves privadas y públicas para el servidor y los clientes.
+- Cifrado seguro de las claves privadas de los clientes usando **GPG**.
+- Actualización automática del archivo `server.conf` del servidor con las claves públicas de los clientes.
+- Uso de contraseñas seguras y fáciles de recordar para cifrar las claves privadas.
+- Compatibilidad con **POSIX** para funcionar en cualquier sistema Unix/Linux.
 
-## ¿Qué hace el script?
+---
 
-### 1. **Creación de Túnel (Servidor)**
+### **Wireguard-SS-Connector**
+**Wireguard-SS-Connector** es una herramienta que permite a los usuarios conectar y desconectar de su VPN **WireGuard** de manera segura y portátil desde un dispositivo USB. Funciona de la siguiente manera:
 
-- Genera una clave privada y pública para el servidor.
-- Crea la configuración básica del servidor WireGuard, especificando la dirección IP y el puerto de escucha.
-- Guarda la configuración en el archivo `server.conf`.
+- Detecta automáticamente los dispositivos USB montados.
+- Permite al usuario seleccionar el dispositivo USB que contiene los archivos de configuración de WireGuard (`.conf`) y las claves privadas cifradas (`.gpg`).
+- Descifra de manera segura la clave privada cuando se conecta al túnel VPN.
+- No modifica configuraciones globales en el sistema, asegurando que todo el proceso se mantenga dentro del USB.
 
-### 2. **Creación de Clientes**
+**Características principales**:
 
-- Genera una clave privada y pública para cada cliente.
-- Cifra la clave privada de cada cliente con GPG y una contraseña generada aleatoriamente (de acuerdo con las reglas de seguridad mencionadas).
-- Crea la configuración del cliente, reemplazando la clave privada por un marcador que indica que debe ser descifrada al momento de la conexión.
-- Actualiza el archivo `server.conf` con la clave pública del nuevo cliente y su configuración de red.
+- **Conexión portátil**: Usa un dispositivo USB para almacenar las configuraciones y claves, permitiendo portar la conexión VPN de manera fácil y segura.
+- **Descifrado seguro**: Las claves privadas se descifran únicamente cuando se establece la conexión, utilizando GPG.
+- **Selector interactivo**: Permite elegir el dispositivo USB, los archivos `.conf` y `.gpg` de forma interactiva.
+- **Desconexión independiente del sistema**: Utiliza `ip link del wg0` para desconectar el túnel sin modificar archivos globales.
+- **Compatibilidad POSIX**: El script es completamente compatible con sistemas Unix/Linux sin depender de características específicas de Bash.
 
-### 3. **Almacenamiento Seguro de Contraseñas**
+---
 
-- Las contraseñas utilizadas para cifrar las claves privadas de los clientes se almacenan en archivos de texto (`clientX.txt`).
-- Las contraseñas son generadas aleatoriamente combinando palabras del diccionario con números y caracteres especiales.
+## 📦 Requisitos
 
-## ¿Cómo usar Wireguard-SS-Creator?
-
-### Requisitos
+Para ambas herramientas necesitarás:
 
 - **WireGuard** debe estar instalado en tu servidor y en las máquinas cliente.
-- **GPG** debe estar instalado para cifrar las claves privadas de los clientes.
+- **GPG** debe estar instalado para cifrar y descifrar las claves privadas.
 - Un sistema compatible con **POSIX**, como Linux o macOS.
+- Un dispositivo USB con:
+  - Archivos de configuración de WireGuard (`.conf`).
+  - Archivos de claves privadas cifradas (`.gpg`).
 
-### Instalación
+---
 
-1. Clona el repositorio:
+## 📋 Instrucciones de Uso
 
-    ```bash
-    git clone https://github.com/tu_usuario/wireguard-ss-creator.git
-    cd wireguard-ss-creator
-    ```
+### 1. **Instalación de Wireguard-SS-Creator**
 
-2. Asegúrate de tener el diccionario de palabras (`diccionario.txt`) en el mismo directorio del script. Si no tienes uno, puedes crear uno o utilizar uno preexistente.
-
-### Usar el script
-
-Ejecuta el script en tu terminal:
+Clona el repositorio y entra al directorio del proyecto:
 
 ```bash
-./wg_secure_creator.sh
+git clone https://github.com/glmbxecurity/Wireguard-SS-Creator.git
+cd Wireguard-SS-Creator
+```
+### 2. Crear las configuraciones de WireGuard
 
+Ejecuta el script para crear las configuraciones de tu servidor y cliente:
+```bash
+./wg_secure_creator.sh
+```
+Este script generará:
+* El archivo de configuración del servidor (server.conf).
+* Los archivos de configuración para cada cliente con sus claves privadas cifradas (clientX.gpg).
+* Los archivos con las credenciales para descifrar cada ClientX.gpg (ClientX.txt).
+
+### 3. Preparar el dispositivo USB con Wireguard-SS-Connector  
+
+Una vez generadas las configuraciones y claves, puedes transferir los archivos de configuración (clientX.conf) y las claves privadas cifradas (clientX.gpg) a tu dispositivo USB.  
+
+En la raíz de tu dispositivo USB, deberías tener algo como esto:  
+```bash
+/mi_usb/
+│
+├── tunel.conf        # Archivo de configuración de WireGuard
+├── clave.gpg         # Clave privada cifrada con GPG
+└── vpn_usb.sh        # Script para conectar y desconectar el túnel
+```
+### 4. Ejecutar el script de Wireguard-SS-Connector
+
+Una vez tengas tu USB preparado, conecta el dispositivo y ejecuta el script vpn_usb.sh para conectar o desconectar el túnel VPN:  
+```bash
+cd /path/to/vpn_usb.sh
+./vpn_usb.sh
+```
+El script contiene un menú en el que puedes seleccionar:    
+* 1 - Conectar: Elige el dispositivo USB, el archivo .conf de la configuración de WireGuard y el archivo .gpg con la clave privada. Luego, ingresa la contraseña GPG cuando se te pida.  
+* 2 Desconectar: Desmonta el túnel VPN con ip link del wg0, sin alterar configuraciones globales.
+
+🛠️ Flujo de trabajo general  
+* Crea las configuraciones utilizando Wireguard-SS-Creator.  
+* Transfiere las configuraciones a tu dispositivo USB.  
+* Conecta el túnel VPN usando Wireguard-SS-Connector desde el USB.  
+* Desconecta el túnel cuando lo necesites.
+  🔒 Seguridad  
+
+  * Wireguard-SS-Creator cifra las claves privadas con GPG y las guarda de forma segura.  
+  * Wireguard-SS-Connector solo descifra la clave privada al momento de la conexión y la elimina después de usarla, sin dejar rastro en el sistema.
+ 
+    📝 Notas adicionales
+
+    * Wireguard-SS-Connector no modifica archivos de configuración globales como /etc/wireguard, lo que hace que la solución sea completamente portátil.
+    * Puedes gestionar múltiples configuraciones de cliente y cambiar entre ellas de forma sencilla.
+    * El script limpia los archivos temporales de forma segura, eliminando las claves privadas descifradas después de la conexión.
