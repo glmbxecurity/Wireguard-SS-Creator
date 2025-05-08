@@ -72,12 +72,12 @@ cd Wireguard-SS-Creator
 
 Ejecuta el script para crear las configuraciones de tu servidor y cliente:
 ```bash
-./wg_secure_creator.sh
+./Wireguard-SS-Creator.sh
 ```
 Este script generará:
-* El archivo de configuración del servidor (server.conf).
-* Los archivos de configuración para cada cliente con sus claves privadas cifradas (clientX.gpg).
-* Los archivos con las credenciales para descifrar cada ClientX.gpg (ClientX.txt).
+* El archivo de configuración del servidor (**server.conf**).
+* Los archivos de configuración para cada cliente con sus claves privadas cifradas (**clientX.gpg**).
+* Los archivos con las credenciales para descifrar cada ClientX.gpg (**ClientX.txt**).
 
 ### 3. Preparar el dispositivo USB con Wireguard-SS-Connector  
 
@@ -89,31 +89,31 @@ En la raíz de tu dispositivo USB, deberías tener algo como esto:
 │
 ├── tunel.conf        # Archivo de configuración de WireGuard
 ├── clave.gpg         # Clave privada cifrada con GPG
-└── vpn_usb.sh        # Script para conectar y desconectar el túnel
+└── Wireguard-SS-Connector.sh        # Script para conectar y desconectar el túnel
 ```
 ### 4. Ejecutar el script de Wireguard-SS-Connector
 
-Una vez tengas tu USB preparado, conecta el dispositivo y ejecuta el script vpn_usb.sh para conectar o desconectar el túnel VPN:  
+Una vez tengas tu USB preparado, conecta el dispositivo y ejecuta el script **Wireguard-SS-Connector.sh** para conectar o desconectar el túnel VPN:  
 ```bash
-cd /path/to/vpn_usb.sh
-./vpn_usb.sh
+cd /path/to/Wireguard-SS-Connector.sh
+./Wireguard-SS-Connector.sh
 ```
 El script contiene un menú en el que puedes seleccionar:    
-* 1 - Conectar: Elige el dispositivo USB, el archivo .conf de la configuración de WireGuard y el archivo .gpg con la clave privada. Luego, ingresa la contraseña GPG cuando se te pida.  
-* 2 Desconectar: Desmonta el túnel VPN con ip link del wg0, sin alterar configuraciones globales.
+* 1 **Conectar**: Elige el dispositivo USB, el archivo .conf de la configuración de WireGuard y el archivo .gpg con la clave privada. Luego, ingresa la contraseña GPG cuando se te pida.  
+* 2 **Desconectar**: Desmonta el túnel VPN con ip link del wg0, sin alterar configuraciones globales.
 
 🛠️ Flujo de trabajo general  
 * Crea las configuraciones utilizando Wireguard-SS-Creator.  
 * Transfiere las configuraciones a tu dispositivo USB.  
 * Conecta el túnel VPN usando Wireguard-SS-Connector desde el USB.  
-* Desconecta el túnel cuando lo necesites.
-  🔒 Seguridad  
+* Desconecta el túnel cuando lo necesites.  
+  🔒 **Seguridad**  
 
-  * Wireguard-SS-Creator cifra las claves privadas con GPG y las guarda de forma segura.  
-  * Wireguard-SS-Connector solo descifra la clave privada al momento de la conexión y la elimina después de usarla, sin dejar rastro en el sistema.
+* **Wireguard-SS-Creator** cifra las claves privadas con GPG y las guarda de forma segura.  
+* **Wireguard-SS-Connector** solo descifra la clave privada al momento de la conexión y la elimina después de usarla, sin dejar rastro en el sistema.
  
-    📝 Notas adicionales
+  📝 **Notas adicionales**
 
-    * Wireguard-SS-Connector no modifica archivos de configuración globales como /etc/wireguard, lo que hace que la solución sea completamente portátil.
-    * Puedes gestionar múltiples configuraciones de cliente y cambiar entre ellas de forma sencilla.
-    * El script limpia los archivos temporales de forma segura, eliminando las claves privadas descifradas después de la conexión.
+  * Wireguard-SS-Connector no modifica archivos de configuración globales como /etc/wireguard, lo que hace que la solución sea completamente portátil.
+  * Puedes gestionar múltiples configuraciones de cliente y cambiar entre ellas de forma sencilla.
+  * El script limpia los archivos temporales de forma segura, eliminando las claves privadas descifradas después de la conexión.
