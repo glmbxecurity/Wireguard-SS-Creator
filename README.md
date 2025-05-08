@@ -84,8 +84,8 @@ git clone https://github.com/glmbxecurity/Wireguard-SS-Creator.git
 cd Wireguard-SS-Creator
 ```
 ### 2. Crear las configuraciones de WireGuard
-
-Ejecuta el script para crear las configuraciones de tu servidor y cliente:
+- Editar el Wireguard-SS-Creator.sh con tu configuracion de IP de Endpoint, puerto, DNS, AllowedIPs  
+- Ejecuta el script para crear las configuraciones de tu servidor y cliente:
 ```bash
 ./Wireguard-SS-Creator.sh
 ```
