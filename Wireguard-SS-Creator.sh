@@ -1,10 +1,8 @@
 #!/bin/sh
 
-WG_DIR="./wg_secure_configs"
+BASE_DIR="./wg_secure_configs"
 DICT_FILE="./diccionario.txt"
-SERVER_CONF="$WG_DIR/server.conf"
-CLIENT_DIR="$WG_DIR/clients"
-mkdir -p "$CLIENT_DIR"
+mkdir -p "$BASE_DIR"
 
 # Validar diccionario
 if [ ! -f "$DICT_FILE" ]; then
@@ -12,72 +10,75 @@ if [ ! -f "$DICT_FILE" ]; then
     exit 1
 fi
 
-# Función para generar una passphrase de palabras (mínimo 18 caracteres)
 generate_passphrase() {
     pass=""
     while [ ${#pass} -lt 20 ]; do
-        # Selección aleatoria de palabra del diccionario
         word=$(awk -v var=$((RANDOM % $(wc -l < "$DICT_FILE"))) 'NR == var {print $0}' "$DICT_FILE")
         pass="$pass$word"
     done
     echo "$pass"
 }
 
-# Función para crear el túnel (servidor)
 create_tunnel() {
-    clear
-    echo "🛠️  Generando configuración del servidor..."
+    read -p "🔤 Nombre del túnel (ej: oficina1): " TUNNEL_NAME
+    TUNNEL_DIR="$BASE_DIR/$TUNNEL_NAME"
+    CLIENT_DIR="$TUNNEL_DIR/clients"
+    TUNNEL_CONF="$TUNNEL_DIR/${TUNNEL_NAME}.conf"
 
-    # Pedir parámetros al usuario
+    if [ -f "$TUNNEL_CONF" ]; then
+        echo "⚠️  El túnel $TUNNEL_NAME ya existe. No se sobreescribirá."
+        return
+    fi
+
+    mkdir -p "$CLIENT_DIR"
+
     read -p "IP del endpoint (ejemplo: 192.168.1.1): " ENDPOINT_IP
     read -p "Puerto del endpoint (ejemplo: 51820): " WG_PORT
     read -p "Rango de IP del túnel (ejemplo: 10.8.0.0/24): " TUNNEL_RANGE
 
-    # Extraer la primera IP del rango para el servidor
-    SERVER_IP=$(echo "$TUNNEL_RANGE" | cut -d'/' -f1) # Extraer la parte de la IP antes de la máscara
-    SERVER_IP="${SERVER_IP%.*}.1"  # Asignar la primera IP del rango para el servidor (ej: 10.8.0.1)
+    SERVER_IP=$(echo "$TUNNEL_RANGE" | cut -d'/' -f1)
+    SERVER_IP="${SERVER_IP%.*}.1"
 
-    # Generar claves del servidor
     SERVER_PRIV_KEY=$(wg genkey)
     SERVER_PUB_KEY=$(echo "$SERVER_PRIV_KEY" | wg pubkey)
 
-    cat > "$SERVER_CONF" <<EOF
+    echo "$SERVER_PRIV_KEY" > "$TUNNEL_DIR/server_private.key"
+    echo "$SERVER_PUB_KEY" > "$TUNNEL_DIR/server_public.key"
+
+    cat > "$TUNNEL_CONF" <<EOF
 [Interface]
 PrivateKey = $SERVER_PRIV_KEY
 Address = $SERVER_IP/24
 ListenPort = $WG_PORT
 EOF
 
-    echo "✅ Servidor creado: $SERVER_CONF"
+    echo "✅ Configuración del túnel creada: $TUNNEL_CONF"
 }
 
-# Función para agregar clientes
 add_clients() {
-    clear
-    if [ ! -f "$SERVER_CONF" ]; then
-        echo "❌ Debes crear primero el túnel del servidor."
+    read -p "🔤 Nombre del túnel al que deseas agregar clientes: " TUNNEL_NAME
+    TUNNEL_DIR="$BASE_DIR/$TUNNEL_NAME"
+    CLIENT_DIR="$TUNNEL_DIR/clients"
+    TUNNEL_CONF="$TUNNEL_DIR/${TUNNEL_NAME}.conf"
+
+    if [ ! -f "$TUNNEL_CONF" ]; then
+        echo "❌ No existe el túnel: $TUNNEL_NAME"
         exit 1
     fi
 
-    SERVER_PUB_KEY=$(awk '/PrivateKey/ {print $3}' "$SERVER_CONF" | wg pubkey)
-    WG_PORT=$(awk '/ListenPort/ {print $3}' "$SERVER_CONF")
-    TUNNEL_RANGE=$(awk '/Address/ {print $3}' "$SERVER_CONF")
+    mkdir -p "$CLIENT_DIR"
+
+    SERVER_PUB_KEY=$(cat "$TUNNEL_DIR/server_public.key")
+    WG_PORT=$(awk '/ListenPort/ {print $3}' "$TUNNEL_CONF")
+    TUNNEL_RANGE=$(awk '/Address/ {print $3}' "$TUNNEL_CONF")
     ALLOWED_IPS="$TUNNEL_RANGE"
 
-    # Pedir el rango de IPs para los clientes
-    read -p "Rango de IPs para los clientes (ejemplo: 10.8.0.0/24): " CLIENTS_RANGE
+    read -p "Rango de IPs para los clientes (ej: 10.8.0.0/24): " CLIENTS_RANGE
 
-    # Contar la cantidad de peers ya existentes en el server.conf
-    CLIENT_COUNT=$(grep -c '\[Peer\]' "$SERVER_CONF")
-    echo "📊 Clientes actuales en el servidor: $CLIENT_COUNT"
+    CLIENT_COUNT=$(grep -c '\[Peer\]' "$TUNNEL_CONF")
+    echo "📊 Clientes actuales en el túnel: $CLIENT_COUNT"
 
     read -p "¿Cuántos clientes quieres agregar? " NEW_CLIENTS
-
-    # Validar que no se exceda el número de clientes (opcional, pero puede ser útil)
-    if [ $((CLIENT_COUNT + NEW_CLIENTS)) -gt 255 ]; then
-        echo "❌ No se pueden agregar más de 255 clientes."
-        exit 1
-    fi
 
     i=1
     while [ $i -le "$NEW_CLIENTS" ]; do
@@ -85,21 +86,15 @@ add_clients() {
         CLIENT_PRIV_KEY=$(wg genkey)
         CLIENT_PUB_KEY=$(echo "$CLIENT_PRIV_KEY" | wg pubkey)
         CLIENT_PSK=$(wg genpsk)
-        
-        # Asignar una IP al cliente dentro del rango
-        CLIENT_IP="${CLIENTS_RANGE%/*}.$((CLIENT_ID + 1))"
 
+        CLIENT_IP="${CLIENTS_RANGE%.*}.$((CLIENT_ID + 1))"
         PASSPHRASE=$(generate_passphrase)
 
-        # Guardar passphrase
-        echo "$PASSPHRASE" > "$CLIENT_DIR/client$CLIENT_ID.txt"
-
-        # Cifrar la clave privada
+        echo "$PASSPHRASE" > "$CLIENT_DIR/client$CLIENT_ID.pass"
         echo "$CLIENT_PRIV_KEY" | gpg --symmetric --batch --passphrase "$PASSPHRASE" \
-            -o "$CLIENT_DIR/client$CLIENT_ID.gpg"
+            -o "$CLIENT_DIR/client$CLIENT_ID.key.gpg"
 
-        # Agregar nuevo peer al server.conf
-        cat >> "$SERVER_CONF" <<EOF
+        cat >> "$TUNNEL_CONF" <<EOF
 
 [Peer]
 PublicKey = $CLIENT_PUB_KEY
@@ -107,7 +102,6 @@ PresharedKey = $CLIENT_PSK
 AllowedIPs = $CLIENT_IP/32
 EOF
 
-        # Configuración del cliente
         cat > "$CLIENT_DIR/client$CLIENT_ID.conf" <<EOF
 [Interface]
 PrivateKey = __REPLACE_WITH_DECRYPTED_KEY__
@@ -117,25 +111,22 @@ DNS = 1.1.1.1
 [Peer]
 PublicKey = $SERVER_PUB_KEY
 PresharedKey = $CLIENT_PSK
-Endpoint = $ENDPOINT_IP:$WG_PORT
+Endpoint = <REEMPLAZAR_CON_ENDPOINT_REAL>:$WG_PORT
 AllowedIPs = $ALLOWED_IPS
 PersistentKeepalive = 25
 EOF
 
-        echo "🧑 Cliente client$CLIENT_ID generado."
-
+        echo "✅ Cliente client$CLIENT_ID creado."
         i=$((i + 1))
     done
-
-    echo "✅ Todos los clientes generados y server.conf actualizado."
 }
 
 # Menú principal
 while true; do
     echo ""
-    echo "🔧 MENÚ WireGuard"
-    echo "1️⃣  Crear túnel (servidor)"
-    echo "2️⃣  Agregar clientes"
+    echo "🔧 MENÚ WireGuard (modo local, seguro)"
+    echo "1️⃣  Crear túnel (archivo .conf local)"
+    echo "2️⃣  Agregar clientes a túnel existente"
     echo "0️⃣  Salir"
     read -p "Selecciona una opción: " option
 
