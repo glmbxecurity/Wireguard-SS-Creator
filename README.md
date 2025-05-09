@@ -132,3 +132,8 @@ El script contiene un menú en el que puedes seleccionar:
   * Wireguard-SS-Connector no modifica archivos de configuración globales como /etc/wireguard, lo que hace que la solución sea completamente portátil.
   * Puedes gestionar múltiples configuraciones de cliente y cambiar entre ellas de forma sencilla.
   * El script limpia los archivos temporales de forma segura, eliminando las claves privadas descifradas después de la conexión.
+ 
+    📝 **Changelog**
+* Ahora permite trabajar con varios tuneles, te pide el nombre del tunel al crear (si existe, no lo sobreescribe)
+* De la misma manera, al agregar clientes pide el nombre del tunel con el que quieres trabajar
+* Cada tunel tiene un directorio dedicado dentro de **wg_secure_configs**
