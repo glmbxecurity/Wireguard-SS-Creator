@@ -1,4 +1,40 @@
 #!/bin/sh
+# === Instrucciones de uso ===
+clear
+echo "======================================================="
+echo "         🔐 Wireguard-SS-Creator"
+echo "======================================================="
+echo
+echo "Este script permite:"
+echo " - Crear configuraciones de túneles WireGuard de forma local y segura."
+echo " - Generar múltiples clientes para un túnel existente."
+echo " - Cifrar las claves privadas de los clientes usando GPG y una passphrase aleatoria."
+echo
+echo "📦 Qué hace exactamente:"
+echo " 1. Crea una estructura de directorios en './wg_secure_configs'"
+echo " 2. Usa un diccionario personalizado (diccionario.txt) para generar passphrases."
+echo " 3. Almacena claves privadas de clientes cifradas con GPG simétrico."
+echo " 4. Genera archivos .conf para servidor y clientes (con la clave enmascarada)."
+echo
+echo "🔒 Consideraciones de seguridad:"
+echo " - El diccionario debe existir en el mismo directorio que el script (diccionario.txt)."
+echo " - Las claves privadas se cifran antes de almacenarse, pero asegúrate de proteger el archivo .pass."
+echo " - Las configuraciones generadas contienen placeholders que deben editarse manualmente:"
+echo "     ⚠️  <REEMPLAZAR_CON_ENDPOINT_REAL>"
+echo
+echo "📋 Requisitos:"
+echo " - wireguard-tools (wg)"
+echo " - gpg"
+echo " - awk, grep, cut, etc. (comandos básicos de Unix)"
+echo
+echo "✅ Archivos generados:"
+echo " - ./wg_secure_configs/<túnel>/"
+echo "     - server_private.key / server_public.key"
+echo "     - <túnel>.conf"
+echo "     - clients/"
+echo "         - clientN.key.gpg / clientN.conf / clientN.pass"
+echo
+echo "======================================================="
 
 BASE_DIR="./wg_secure_configs"
 DICT_FILE="./diccionario.txt"
