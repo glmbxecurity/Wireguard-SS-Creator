@@ -1,4 +1,15 @@
 # Wireguard-SS-Creator & Wireguard-SS-Connector
+- [Wireguard-SS-Creator & Wireguard-SS-Connector](#wireguard-ss-creator-wireguard-ss-connector)
+   * [🚀 ¿Qué hacen estas herramientas?](#-qué-hacen-estas-herramientas)
+      + [**Wireguard-SS-Creator**](#wireguard-ss-creator)
+      + [**Wireguard-SS-Connector**](#wireguard-ss-connector)
+   * [📦 Requisitos](#-requisitos)
+   * [📋 Instrucciones de Uso](#-instrucciones-de-uso)
+      + [1. **Instalación de Wireguard-SS-Creator**](#1-instalación-de-wireguard-ss-creator)
+      + [2. Crear las configuraciones de WireGuard  ](#2-crear-las-configuraciones-de-wireguard)
+      + [3. Preparar el dispositivo USB con Wireguard-SS-Connector  ](#3-preparar-el-dispositivo-usb-con-wireguard-ss-connector)
+      + [4. Ejecutar el script de Wireguard-SS-Connector](#4-ejecutar-el-script-de-wireguard-ss-connector)
+      + [🛠️ Flujo de trabajo general  ](#-flujo-de-trabajo-general)
 
 **Wireguard-SS-Creator** y **Wireguard-SS-Connector** son dos herramientas diseñadas para ofrecer una solución simple, segura y portátil para la creación y gestión de túneles VPN utilizando **WireGuard**. Estas herramientas están especialmente orientadas a administradores de redes y usuarios que deseen mantener la seguridad de sus claves privadas mientras utilizan conexiones VPN.
 
