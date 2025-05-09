@@ -1,7 +1,37 @@
 #!/bin/sh
-
-# === Menú ===
+# === Instrucciones de uso ===
 clear
+echo "======================================================="
+echo "        🌐 Wireguard-SS-Connector (VPN desde USB)"
+echo "======================================================="
+echo
+echo "Este script permite conectarse o desconectarse de una VPN usando configuraciones"
+echo "y claves almacenadas en un dispositivo USB. Requiere privilegios de sudo."
+echo
+echo "🔹 ¿Qué hace?"
+echo " - Escanea dispositivos USB montados."
+echo " - Permite seleccionar un archivo .conf de WireGuard."
+echo " - Permite seleccionar un archivo .gpg con la clave privada cifrada."
+echo " - Descifra la clave, la inserta en el archivo de configuración temporalmente."
+echo " - Levanta la interfaz de túnel usando 'wg-quick'."
+echo " - También permite cerrar el túnel si ya está activo."
+echo
+echo "🔒 Consideraciones:"
+echo " - Asegúrate de que el archivo .gpg contenga una clave privada válida de WireGuard."
+echo " - El archivo .conf debe ser una configuración válida de WireGuard."
+echo " - El script eliminará los archivos temporales usados para mayor seguridad."
+echo " - El dispositivo USB debe estar montado en /media o /run/media."
+echo
+echo "📋 Requisitos:"
+echo " - gpg"
+echo " - wireguard-tools (wg-quick, wg)"
+echo " - sudo"
+echo
+echo "⚠️ Este script sobrescribirá configuraciones previas en wg0."
+echo
+echo "==============================================="
+# === Menú ===
+
 echo "🌐 VPN desde USB"
 echo "1) Conectar"
 echo "2) Desconectar"
